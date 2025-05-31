@@ -153,6 +153,22 @@ function showCountdown() {
     const now = new Date();
     let diff = now - startDate;
     let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    // Calcular diferencia de meses
+    let months = (now.getFullYear() - startDate.getFullYear()) * 12 + (now.getMonth() - startDate.getMonth());
+    if (now.getDate() < startDate.getDate()) {
+      months--; // Ajustar si el día del mes aún no ha llegado
+    }
+    // Próximo aniversario mensual
+    let nextMonthDate = new Date(startDate);
+    nextMonthDate.setMonth(startDate.getMonth() + months + 1);
+
+    // Ajustar si el día del mes no existe (por ejemplo, 31 en febrero)
+    while (nextMonthDate.getDate() !== startDate.getDate() && nextMonthDate.getDate() > 1) {
+      nextMonthDate.setDate(nextMonthDate.getDate() - 1);
+    }
+    
+    // Contador hasta el aniversario principal
+    let daysUntilNextMonth = Math.ceil((nextMonthDate - now) / (1000 * 60 * 60 * 24));
     let eventDiff = eventDate - now;
     let eventDays = Math.max(0, Math.floor(eventDiff / (1000 * 60 * 60 * 24)));
     let eventHours = Math.max(0, Math.floor((eventDiff / (1000 * 60 * 60)) % 24));
@@ -161,6 +177,8 @@ function showCountdown() {
 
     container.innerHTML =
       `Llevamos juntos: <b>${days}</b> días<br>` +
+      `Eso son aproximadamente: <b>${months}</b> ${months === 1 ? 'mes' : 'meses'}<br>` +
+      `Faltan <b>${daysUntilNextMonth}</b> día${daysUntilNextMonth === 1 ? '' : 's'} para cumplir otro mes<br>` +
       `Nuestro aniversario: <b>${eventDays}d ${eventHours}h ${eventMinutes}m ${eventSeconds}s</b>`;
     container.classList.add('visible');
   }
